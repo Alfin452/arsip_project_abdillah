@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // Tambahan
+            $table->enum('role', ['admin', 'karyawan'])->default('karyawan');
+            $table->string('jabatan')->nullable(); // Misal: Staff IT, HRD, Kepala Bagian
             $table->rememberToken();
             $table->timestamps();
         });

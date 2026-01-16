@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',     // <--- Tambahkan ini
+        'jabatan',  // <--- Tambahkan ini
     ];
 
     /**
@@ -44,5 +46,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function dispositions()
+    {
+        return $this->hasMany(Disposition::class);
+    }
+
+    // Helper kecil buat cek role di controller/view nanti
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
