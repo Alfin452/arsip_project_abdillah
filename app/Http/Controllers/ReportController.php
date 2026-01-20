@@ -98,4 +98,48 @@ class ReportController extends Controller
         $letter = IncomingLetter::with(['category', 'dispositions.user'])->findOrFail($id);
         return view('reports.print-sheet', compact('letter'));
     }
+
+    // --- LAPORAN 5: KINERJA PEGAWAI (Preview) ---
+    public function staff(Request $request)
+    {
+        // Ambil semua user kecuali Admin (Role Admin biasanya tidak menerima disposisi)
+        // Hitung jumlah disposisi berdasarkan statusnya
+        $data = \App\Models\User::where('role', 'karyawan')
+            ->withCount([
+                'dispositions as total_assigned',
+                'dispositions as total_pending' => function ($q) {
+                    $q->where('status', 'pending');
+                },
+                'dispositions as total_process' => function ($q) {
+                    $q->where('status', 'processed');
+                },
+                'dispositions as total_completed' => function ($q) {
+                    $q->where('status', 'completed');
+                }
+            ])
+            ->get();
+
+        return view('reports.staff', compact('data'));
+    }
+
+    // --- LAPORAN 5: KINERJA PEGAWAI (Cetak) ---
+    public function printStaff()
+    {
+        $data = \App\Models\User::where('role', 'karyawan')
+            ->withCount([
+                'dispositions as total_assigned',
+                'dispositions as total_pending' => function ($q) {
+                    $q->where('status', 'pending');
+                },
+                'dispositions as total_process' => function ($q) {
+                    $q->where('status', 'processed');
+                },
+                'dispositions as total_completed' => function ($q) {
+                    $q->where('status', 'completed');
+                }
+            ])
+            ->get();
+
+        return view('reports.print-staff', compact('data'));
+    }
 }

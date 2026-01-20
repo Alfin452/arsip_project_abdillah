@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Surat Masuk & Keluar (Biasanya Karyawan TU juga boleh input)
     // Kalo instansi kamu melarang Karyawan biasa input surat, pindahkan ke group Admin di bawah.
+    Route::get('incoming-letters/export', [IncomingLetterController::class, 'export'])->name('incoming-letters.export');
     Route::resource('incoming-letters', IncomingLetterController::class);
     Route::resource('outgoing-letters', OutgoingLetterController::class);
 
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/reports/print/outgoing', [ReportController::class, 'printOutgoing'])->name('reports.print.outgoing');
         Route::get('/reports/print/category', [ReportController::class, 'printCategory'])->name('reports.print.category');
         Route::get('/reports/print/disposition', [ReportController::class, 'printDisposition'])->name('reports.print.disposition');
+
+        Route::get('/reports/staff', [ReportController::class, 'staff'])->name('reports.staff');
+        Route::get('/reports/print/staff', [ReportController::class, 'printStaff'])->name('reports.print.staff');
     });
 
     // Cetak Lembar Disposisi & Download File (Boleh semua staff terkait)

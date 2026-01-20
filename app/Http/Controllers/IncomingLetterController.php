@@ -178,4 +178,20 @@ class IncomingLetterController extends Controller
         return redirect()->route('incoming-letters.index')
             ->with('success', 'Arsip surat berhasil dihapus permanen.');
     }
+
+    public function export()
+    {
+        // Ambil semua data surat masuk
+        $letters = IncomingLetter::with('category')->orderBy('letter_date', 'desc')->get();
+
+        // Nama file saat didownload
+        $filename = "surat_masuk_" . date('Y-m-d_H-i') . ".xls";
+
+        // Header agar browser membacanya sebagai file Excel
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+
+        // Tampilkan view khusus tabel (tanpa layout website)
+        return view('incoming-letters.export-excel', compact('letters'));
+    }
 }
