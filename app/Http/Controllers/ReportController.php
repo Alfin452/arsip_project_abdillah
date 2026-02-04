@@ -142,4 +142,29 @@ class ReportController extends Controller
 
         return view('reports.print-staff', compact('data'));
     }
+
+    /**
+     * CETAK Laporan Disposisi
+     */
+    public function printDisposition(Request $request)
+    {
+        // Ambil parameter tanggal dan status dari request
+        $startDate = $request->input('start_date', date('Y-m-01'));
+        $endDate = $request->input('end_date', date('Y-m-d'));
+        $status = $request->input('status', 'all');
+
+        // Query data sama seperti preview
+        $query = Disposition::with(['incomingLetter', 'user'])
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Filter status jika tidak 'all'
+        if ($status != 'all') {
+            $query->where('status', $status);
+        }
+
+        $data = $query->latest()->get();
+
+        // Return ke view cetak (pastikan file view reports/print-disposition.blade.php ada)
+        return view('reports.print-disposition', compact('data', 'startDate', 'endDate', 'status'));
+    }
 }
